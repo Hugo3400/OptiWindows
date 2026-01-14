@@ -13,6 +13,18 @@ from utils.language import get_language_manager, t
 logger = get_logger(__name__)
 
 
+def get_app_version() -> str:
+    """Get current application version from VERSION file"""
+    try:
+        version_file = Path(__file__).parent.parent / 'VERSION'
+        if version_file.exists():
+            with open(version_file, 'r', encoding='utf-8') as f:
+                return f.read().strip()
+    except Exception as e:
+        logger.warning(f"Failed to read VERSION file: {e}")
+    return "1.0.0"
+
+
 class SettingsModule:
     """Settings module for OptiWindows"""
     
@@ -174,7 +186,7 @@ class SettingsModule:
         
         ctk.CTkLabel(
             version_frame,
-            text="1.0.0",
+            text=get_app_version(),
             font=ctk.CTkFont(size=14, weight="bold")
         ).pack(side="right", padx=10)
         
@@ -421,7 +433,7 @@ class SettingsModule:
             try:
                 # Default settings
                 defaults = {
-                    "version": "1.0.0",
+                    "version": get_app_version(),
                     "language": "fr",
                     "theme": "dark",
                     "auto_backup": True,
