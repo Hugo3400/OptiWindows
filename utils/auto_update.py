@@ -28,7 +28,7 @@ class AutoUpdater:
     def __init__(self):
         self.repo = GITHUB_REPO
         self.api_url = GITHUB_API
-        self.current_version = CURRENT_VERSION
+        self.current_version = get_current_version()
         self.update_available = False
         self.latest_version = None
         self.download_url = None
