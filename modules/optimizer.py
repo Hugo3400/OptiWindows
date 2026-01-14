@@ -288,11 +288,16 @@ class OptimizerModule:
             
             messagebox.showinfo("Success", "Memory management optimized! Restart required.")
             logger.info("Memory management optimized")
-        except PermissionError:
-            messagebox.showwarning("Admin Required", "Administrator privileges are required to optimize memory management.")
-            logger.warning("Memory optimization failed: admin privileges required")
+        except (PermissionError, OSError) as e:
+            if "Access is denied" in str(e) or getattr(e, 'winerror', None) == 5:
+                messagebox.showwarning("Admin Required", "Administrator privileges are required to optimize memory management.")
+                logger.warning(f"Memory optimization failed: admin privileges required - {e}")
+            else:
+                messagebox.showerror("Error", f"Failed to optimize memory: {e}")
+                logger.error(f"Memory optimization error: {e}")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to optimize memory: {e}")
+            logger.error(f"Memory optimization error: {e}")
     
     def disable_background_apps(self):
         """Disable background apps"""

@@ -41,8 +41,9 @@ def main():
         if response != 'y':
             print("\nPlease restart as Administrator (Right-click → Run as administrator)")
             sys.exit(0)
-    
-    logger.info("Running with administrator privileges")
+        logger.info("User chose to continue without admin privileges")
+    else:
+        logger.info("Running with administrator privileges")
     
     # Check for updates in background
     def check_updates():
