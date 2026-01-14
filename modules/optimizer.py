@@ -258,11 +258,16 @@ class OptimizerModule:
                     key = winreg.CreateKey(winreg.HKEY_LOCAL_MACHINE, key_path)
                     winreg.SetValueEx(key, 'AllowTelemetry', 0, winreg.REG_DWORD, 0)
                     winreg.CloseKey(key)
+                except PermissionError:
+                    logger.debug(f"Admin privileges required for registry key: {key_path}")
                 except:
                     pass
             
             messagebox.showinfo("Success", "Telemetry disabled successfully!")
             logger.info("Telemetry disabled")
+        except PermissionError:
+            messagebox.showwarning("Admin Required", "Administrator privileges are required to disable telemetry.")
+            logger.warning("Telemetry disable failed: admin privileges required")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to disable telemetry: {e}")
             logger.error(f"Error disabling telemetry: {e}")
@@ -283,6 +288,9 @@ class OptimizerModule:
             
             messagebox.showinfo("Success", "Memory management optimized! Restart required.")
             logger.info("Memory management optimized")
+        except PermissionError:
+            messagebox.showwarning("Admin Required", "Administrator privileges are required to optimize memory management.")
+            logger.warning("Memory optimization failed: admin privileges required")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to optimize memory: {e}")
     
@@ -309,6 +317,9 @@ class OptimizerModule:
             
             messagebox.showinfo("Success", "Processor scheduling optimized!")
             logger.info("Processor scheduling optimized")
+        except PermissionError:
+            messagebox.showwarning("Admin Required", "Administrator privileges are required to optimize processor scheduling.")
+            logger.warning("Processor optimization failed: admin privileges required")
         except Exception as e:
             messagebox.showerror("Error", f"Failed: {e}")
     
@@ -320,6 +331,9 @@ class OptimizerModule:
             
             messagebox.showinfo("Success", "Superfetch/Prefetch disabled!")
             logger.info("Superfetch disabled")
+        except PermissionError:
+            messagebox.showwarning("Admin Required", "Administrator privileges are required to disable Superfetch.")
+            logger.warning("Superfetch disable failed: admin privileges required")
         except Exception as e:
             messagebox.showerror("Error", f"Failed: {e}")
     
@@ -337,6 +351,9 @@ class OptimizerModule:
             
             messagebox.showinfo("Success", "Network settings optimized!")
             logger.info("Network optimized")
+        except PermissionError:
+            messagebox.showwarning("Admin Required", "Administrator privileges are required to optimize network settings.")
+            logger.warning("Network optimization failed: admin privileges required")
         except Exception as e:
             messagebox.showerror("Error", f"Failed: {e}")
     
@@ -348,6 +365,9 @@ class OptimizerModule:
             
             messagebox.showinfo("Success", "Search indexing disabled!")
             logger.info("Search indexing disabled")
+        except PermissionError:
+            messagebox.showwarning("Admin Required", "Administrator privileges are required to disable search indexing.")
+            logger.warning("Search indexing disable failed: admin privileges required")
         except Exception as e:
             messagebox.showerror("Error", f"Failed: {e}")
     
@@ -481,6 +501,9 @@ class OptimizerModule:
             try:
                 run_command(['powercfg', '-h', 'off'])
                 messagebox.showinfo("Success", "Hibernation disabled!")
+            except PermissionError:
+                messagebox.showwarning("Admin Required", "Administrator privileges are required to disable hibernation.")
+                logger.warning("Hibernation disable failed: admin privileges required")
             except Exception as e:
                 messagebox.showerror("Error", f"Failed: {e}")
     
@@ -492,6 +515,9 @@ class OptimizerModule:
                 run_command(['powershell', '-Command',
                               'Disable-ComputerRestore -Drive "C:\\"'])
                 messagebox.showinfo("Success", "System restore disabled!")
+            except PermissionError:
+                messagebox.showwarning("Admin Required", "Administrator privileges are required to disable system restore.")
+                logger.warning("System restore disable failed: admin privileges required")
             except Exception as e:
                 messagebox.showerror("Error", f"Failed: {e}")
     
@@ -505,6 +531,9 @@ class OptimizerModule:
                 winreg.CloseKey(key)
                 
                 messagebox.showinfo("Success", "Page file disabled! Restart required.")
+            except PermissionError:
+                messagebox.showwarning("Admin Required", "Administrator privileges are required to disable page file.")
+                logger.warning("Page file disable failed: admin privileges required")
             except Exception as e:
                 messagebox.showerror("Error", f"Failed: {e}")
     
@@ -515,6 +544,9 @@ class OptimizerModule:
             run_command(['fsutil', 'behavior', 'set', 'disabledeletenotify', '0'])
             
             messagebox.showinfo("Success", "SSD TRIM enabled!")
+        except PermissionError:
+            messagebox.showwarning("Admin Required", "Administrator privileges are required to optimize SSD.")
+            logger.warning("SSD optimization failed: admin privileges required")
         except Exception as e:
             messagebox.showerror("Error", f"Failed: {e}")
     
