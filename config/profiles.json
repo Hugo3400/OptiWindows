@@ -1,0 +1,71 @@
+{
+  "profiles": {
+    "default": {
+      "name": "Par défaut",
+      "description": "Configuration équilibrée pour usage quotidien",
+      "settings": {
+        "clean_temp": true,
+        "clean_cache": true,
+        "optimize_startup": true,
+        "disable_telemetry": true,
+        "gaming_mode": false
+      }
+    },
+    "gaming": {
+      "name": "Gaming",
+      "description": "Optimisé pour les jeux et performances maximales",
+      "settings": {
+        "clean_temp": true,
+        "clean_cache": true,
+        "optimize_startup": true,
+        "disable_telemetry": true,
+        "gaming_mode": true,
+        "ultimate_performance": true,
+        "disable_services": true,
+        "optimize_gpu": true
+      }
+    },
+    "privacy": {
+      "name": "Confidentialité Max",
+      "description": "Protection maximale de la vie privée",
+      "settings": {
+        "clean_temp": true,
+        "clean_cache": true,
+        "optimize_startup": false,
+        "disable_telemetry": true,
+        "disable_cortana": true,
+        "disable_ads": true,
+        "disable_location": true,
+        "disable_suggestions": true,
+        "block_tracking": true
+      }
+    },
+    "performance": {
+      "name": "Performance",
+      "description": "Optimisation maximale des performances système",
+      "settings": {
+        "clean_temp": true,
+        "clean_cache": true,
+        "optimize_startup": true,
+        "disable_telemetry": true,
+        "optimize_services": true,
+        "optimize_visual_effects": true,
+        "optimize_memory": true,
+        "defrag_registry": true
+      }
+    },
+    "laptop": {
+      "name": "Laptop/Batterie",
+      "description": "Optimisé pour économiser la batterie",
+      "settings": {
+        "clean_temp": true,
+        "clean_cache": false,
+        "optimize_startup": true,
+        "disable_telemetry": true,
+        "power_saver": true,
+        "reduce_brightness": false,
+        "disable_animations": true
+      }
+    }
+  }
+}

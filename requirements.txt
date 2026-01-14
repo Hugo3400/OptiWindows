@@ -1,0 +1,13 @@
+# OptiWindows - Requirements
+
+# GUI Framework
+customtkinter==5.2.1
+# Note: tkinter is included with Python
+
+# System Information
+psutil==5.9.6
+wmi==1.5.1; platform_system=="Windows"
+pywin32==306; platform_system=="Windows"
+
+# Additional utilities
+pillow==10.1.0
