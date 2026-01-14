@@ -11,3 +11,7 @@ pywin32>=307; platform_system=="Windows"
 
 # Additional utilities
 pillow>=10.0.0
+
+# Auto-update
+requests>=2.31.0
+packaging>=23.0

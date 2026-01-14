@@ -4,6 +4,7 @@ Cleaner Module - System Cleaning Operations
 
 import customtkinter as ctk
 import threading
+import os
 from tkinter import messagebox
 from pathlib import Path
 import shutil

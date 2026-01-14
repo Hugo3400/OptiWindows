@@ -19,6 +19,7 @@ from modules.repair import RepairModule
 from modules.features import FeaturesModule
 from utils.system_info import SystemInfo
 from utils.logger import get_logger
+from utils.auto_update import AutoUpdater
 
 logger = get_logger(__name__)
 
@@ -38,12 +39,17 @@ class MainWindow(ctk.CTk):
         self.current_module = None
         self.system_info = SystemInfo()
         self.modules: Dict[str, Any] = {}
+        self.updater = AutoUpdater()
+        self.update_available = False
         
         # Setup UI
         self.setup_ui()
         
-        # Load system info
-        threading.Thread(target=self.load_system_info, daemon=True).start()
+        # Load system info (avec délai pour alléger le démarrage)
+        threading.Timer(0.5, self.load_system_info).start()
+        
+        # Check for updates in background
+        threading.Timer(2.0, self.check_for_updates).start()
         
         logger.info("MainWindow initialized")
     
@@ -375,3 +381,104 @@ class MainWindow(ctk.CTk):
             command=lambda: self.show_module("dashboard"),
             width=200
         ).pack(pady=10)
+    
+    def check_for_updates(self):
+        """Check for updates in background"""
+        try:
+            if self.updater.check_for_updates():
+                self.update_available = True
+                self.show_update_notification()
+        except Exception as e:
+            logger.error(f"Update check failed: {e}")
+    
+    def show_update_notification(self):
+        """Show update notification banner"""
+        try:
+            update_info = self.updater.get_update_info()
+            
+            # Create notification banner at top
+            notif_frame = ctk.CTkFrame(self, fg_color="#2B5A8C", height=40)
+            notif_frame.place(x=0, y=0, relwidth=1.0)
+            
+            msg = f"🎉 New version {update_info.get('version')} available!"
+            ctk.CTkLabel(
+                notif_frame,
+                text=msg,
+                font=ctk.CTkFont(size=13, weight="bold"),
+                text_color="white"
+            ).pack(side="left", padx=20, pady=8)
+            
+            ctk.CTkButton(
+                notif_frame,
+                text="Update Now",
+                command=self.start_update,
+                width=120,
+                height=30,
+                fg_color="#4A9EFF"
+            ).pack(side="right", padx=10, pady=5)
+            
+            ctk.CTkButton(
+                notif_frame,
+                text="Later",
+                command=lambda: notif_frame.place_forget(),
+                width=80,
+                height=30,
+                fg_color="transparent",
+                border_width=1
+            ).pack(side="right", padx=5, pady=5)
+            
+        except Exception as e:
+            logger.error(f"Failed to show update notification: {e}")
+    
+    def start_update(self):
+        """Start the update process"""
+        try:
+            from tkinter import messagebox
+            
+            if messagebox.askyesno("Update", 
+                f"Update to version {self.updater.latest_version}?\n\n"
+                "The application will restart after update."):
+                
+                # Show progress window
+                progress_window = ctk.CTkToplevel(self)
+                progress_window.title("Updating...")
+                progress_window.geometry("400x150")
+                progress_window.transient(self)
+                progress_window.grab_set()
+                
+                status_label = ctk.CTkLabel(
+                    progress_window,
+                    text="Preparing update...",
+                    font=ctk.CTkFont(size=14)
+                )
+                status_label.pack(pady=20)
+                
+                progress_bar = ctk.CTkProgressBar(progress_window, width=350)
+                progress_bar.pack(pady=20)
+                progress_bar.set(0)
+                
+                def update_progress(message, value):
+                    status_label.configure(text=message)
+                    progress_bar.set(value / 100)
+                    progress_window.update()
+                
+                # Perform update
+                def do_update():
+                    try:
+                        if self.updater.full_update_process(update_progress):
+                            messagebox.showinfo("Success", 
+                                "Update installed successfully!\n\n"
+                                "Application will restart now.")
+                            self.updater.restart_application()
+                        else:
+                            messagebox.showerror("Error", 
+                                "Update failed. Check logs for details.")
+                    finally:
+                        progress_window.destroy()
+                
+                threading.Thread(target=do_update, daemon=True).start()
+                
+        except Exception as e:
+            logger.error(f"Update failed: {e}")
+            from tkinter import messagebox
+            messagebox.showerror("Error", f"Update failed: {e}")

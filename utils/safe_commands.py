@@ -4,7 +4,7 @@ Provides secure wrappers for running system commands
 """
 
 import subprocess
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 from utils.logger import get_logger
 
 logger = get_logger(__name__)

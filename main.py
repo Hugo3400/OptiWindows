@@ -17,6 +17,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 from ui.main_window import MainWindow
 from utils.admin_check import check_admin_privileges, restart_as_admin
 from utils.logger import setup_logger
+from utils.auto_update import check_and_notify_update
+import threading
 
 # Configuration
 ctk.set_appearance_mode("dark")
@@ -41,6 +43,15 @@ def main():
             sys.exit(0)
     
     logger.info("Running with administrator privileges")
+    
+    # Check for updates in background
+    def check_updates():
+        update_info = check_and_notify_update()
+        if update_info:
+            logger.info(f"Update available: {update_info.get('version')}")
+            # L'info sera affichée dans l'UI
+    
+    threading.Thread(target=check_updates, daemon=True).start()
     
     # Create and run main window
     try:
