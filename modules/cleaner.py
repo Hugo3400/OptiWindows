@@ -397,8 +397,16 @@ class CleanerModule:
         """Clean Windows Defender logs (requires admin)"""
         try:
             defender_path = Path('C:\\ProgramData\\Microsoft\\Windows Defender\\Scans\\History')
-            if defender_path.exists():
-                self.total_cleaned += self._delete_folder_contents(defender_path)
+            # Check if path exists - this can also raise PermissionError
+            try:
+                if not defender_path.exists():
+                    logger.debug("Defender logs path does not exist")
+                    return
+            except PermissionError:
+                logger.debug("Defender logs require admin privileges - skipped (access check)")
+                return
+            
+            self.total_cleaned += self._delete_folder_contents(defender_path)
         except PermissionError:
             logger.debug("Defender logs require admin privileges - skipped")
         except Exception as e:
