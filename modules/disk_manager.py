@@ -12,7 +12,7 @@ class DiskManagerModule:
         self.frame = ctk.CTkFrame(self.parent)
         self.frame.pack(fill="both", expand=True, padx=20, pady=20)
         
-        title = ctk.CTkLabel(self.frame, text="💾 Disk Manager", 
+        title = ctk.CTkLabel(self.frame, text="💿 Disk Manager", 
                             font=ctk.CTkFont(size=24, weight="bold"))
         title.pack(pady=20)
         
@@ -21,5 +21,8 @@ class DiskManagerModule:
                            font=ctk.CTkFont(size=14))
         desc.pack(pady=10)
         
-        ctk.CTkLabel(self.frame, text="🚧 Coming in next update! 🚧",
-                    font=ctk.CTkFont(size=16), text_color="orange").pack(pady=50)
+        ctk.CTkLabel(self.frame, text="🛠️ Under Development - Coming Soon!",
+                    font=ctk.CTkFont(size=16), text_color="orange").pack(pady=30)
+        
+        ctk.CTkLabel(self.frame, text="Planned Features: Disk Health, Partitioning, Space Analysis",
+                    font=ctk.CTkFont(size=12), text_color="gray").pack(pady=5)

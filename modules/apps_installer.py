@@ -21,5 +21,8 @@ class AppsInstallerModule:
                            font=ctk.CTkFont(size=14))
         desc.pack(pady=10)
         
-        ctk.CTkLabel(self.frame, text="🚧 Coming in next update! 🚧",
-                    font=ctk.CTkFont(size=16), text_color="orange").pack(pady=50)
+        ctk.CTkLabel(self.frame, text="🛠️ Under Development - Coming Soon!",
+                    font=ctk.CTkFont(size=16), text_color="orange").pack(pady=30)
+        
+        ctk.CTkLabel(self.frame, text="Planned Features: One-Click Software Installation, Package Manager",
+                    font=ctk.CTkFont(size=12), text_color="gray").pack(pady=5)

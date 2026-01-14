@@ -17,9 +17,11 @@ from modules.apps_installer import AppsInstallerModule
 from modules.tweaks import TweaksModule
 from modules.repair import RepairModule
 from modules.features import FeaturesModule
+from modules.settings import SettingsModule
 from utils.system_info import SystemInfo
 from utils.logger import get_logger
 from utils.auto_update import AutoUpdater
+from utils.language import get_language_manager, t
 
 logger = get_logger(__name__)
 
@@ -118,15 +120,15 @@ class MainWindow(ctk.CTk):
             ("🏠 Dashboard", "dashboard"),
             ("🧹 Cleaner", "cleaner"),
             ("⚡ Optimizer", "optimizer"),
-            ("🛡️ Privacy", "privacy"),
-            ("🎮 Gaming Mode", "gaming"),
-            ("💾 Disk Manager", "disk"),
-            ("🚀 Startup Manager", "startup"),
-            ("📦 Apps Installer", "apps"),
+            ("� Privacy", "privacy"),
+            ("🎮 Gaming", "gaming"),
+            ("💿 Disk Manager", "disk"),
+            ("🚀 Startup", "startup"),
+            ("📦 Apps", "apps"),
             ("🔧 Tweaks", "tweaks"),
-            ("🔨 Repair Tools", "repair"),
-            ("🎯 Features", "features"),
-            ("📊 Monitoring", "monitoring"),
+            ("🔨 Repair", "repair"),
+            ("✨ Features", "features"),
+            ("📈 Monitoring", "monitoring"),
             ("⚙️ Settings", "settings"),
         ]
         
@@ -223,7 +225,7 @@ class MainWindow(ctk.CTk):
         elif module_id == "monitoring":
             self.show_monitoring_placeholder()
         elif module_id == "settings":
-            self.show_settings_placeholder()
+            self.show_settings()
         else:
             self.show_module_placeholder(module_id)
         
@@ -326,36 +328,11 @@ class MainWindow(ctk.CTk):
             width=200
         ).pack(pady=10)
     
-    def show_settings_placeholder(self):
-        """Show settings module placeholder (coming soon)"""
-        frame = ctk.CTkFrame(self.content_frame)
-        frame.pack(fill="both", expand=True, padx=50, pady=50)
-        
-        ctk.CTkLabel(
-            frame,
-            text="⚙️ Settings",
-            font=ctk.CTkFont(size=28, weight="bold")
-        ).pack(pady=30)
-        
-        ctk.CTkLabel(
-            frame,
-            text="Application settings and preferences",
-            font=ctk.CTkFont(size=14)
-        ).pack(pady=10)
-        
-        ctk.CTkLabel(
-            frame,
-            text="⏳ Coming in version 1.1.0",
-            font=ctk.CTkFont(size=12),
-            text_color="orange"
-        ).pack(pady=20)
-        
-        ctk.CTkButton(
-            frame,
-            text="← Back to Dashboard",
-            command=lambda: self.show_module("dashboard"),
-            width=200
-        ).pack(pady=10)
+    def show_settings(self):
+        """Show settings module"""
+        if "settings" not in self.modules:
+            self.modules["settings"] = SettingsModule(self.content_frame)
+        self.modules["settings"].get_frame().pack(fill="both", expand=True)
     
     def show_module_placeholder(self, module_id: str):
         """Show generic module placeholder"""
