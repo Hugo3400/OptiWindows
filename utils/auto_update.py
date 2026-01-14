@@ -19,7 +19,21 @@ logger = get_logger(__name__)
 # Configuration
 GITHUB_REPO = "Hugo3400/OptiWindows"
 GITHUB_API = f"https://api.github.com/repos/{GITHUB_REPO}"
-CURRENT_VERSION = "1.0.0"
+
+
+def get_current_version() -> str:
+    """Read current version from VERSION file"""
+    try:
+        version_file = Path(__file__).parent.parent / 'VERSION'
+        if version_file.exists():
+            with open(version_file, 'r', encoding='utf-8') as f:
+                return f.read().strip()
+    except Exception as e:
+        logger.warning(f"Failed to read VERSION file: {e}")
+    return "1.0.0"  # Fallback version
+
+
+CURRENT_VERSION = get_current_version()
 
 
 class AutoUpdater:
