@@ -21,7 +21,7 @@ class SettingsModule:
         self.frame = ctk.CTkScrollableFrame(parent, fg_color="transparent")
         self.config = ConfigManager()
         self.lang = get_language_manager()
-        self.settings = self.config.get_all()
+        self.settings = self.config.settings.copy()
         
         self.create_ui()
     
@@ -398,7 +398,9 @@ class SettingsModule:
     def save_settings(self):
         """Save settings to file"""
         try:
-            self.config.save_all(self.settings)
+            # Update config manager settings
+            self.config.settings = self.settings
+            self.config.save_settings()
             messagebox.showinfo(
                 t('common.success', 'Success'),
                 "Settings saved successfully!"
@@ -438,7 +440,8 @@ class SettingsModule:
                     }
                 }
                 
-                self.config.save_all(defaults)
+                self.config.settings = defaults
+                self.config.save_settings()
                 messagebox.showinfo(
                     t('common.success', 'Success'),
                     "Settings reset! Please restart the application."
