@@ -394,10 +394,15 @@ class CleanerModule:
                 pass
     
     def _clean_defender_logs(self):
-        """Clean Windows Defender logs"""
-        defender_path = Path('C:\\ProgramData\\Microsoft\\Windows Defender\\Scans\\History')
-        if defender_path.exists():
-            self.total_cleaned += self._delete_folder_contents(defender_path)
+        """Clean Windows Defender logs (requires admin)"""
+        try:
+            defender_path = Path('C:\\ProgramData\\Microsoft\\Windows Defender\\Scans\\History')
+            if defender_path.exists():
+                self.total_cleaned += self._delete_folder_contents(defender_path)
+        except PermissionError:
+            logger.debug("Defender logs require admin privileges - skipped")
+        except Exception as e:
+            logger.debug(f"Could not clean defender logs: {e}")
     
     def _get_browser_cache_paths(self) -> List[Path]:
         """Get browser cache paths"""
