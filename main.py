@@ -32,19 +32,13 @@ def main():
     if not check_admin_privileges():
         logger.warning("Not running as administrator")
         print("\n" + "="*60)
-        print("⚠️  OptiWindows requires Administrator privileges")
+        print("⚠️  Administrator privileges recommended for full functionality")
         print("="*60)
-        print("\nThe application will now restart with elevated privileges...\n")
         
-        try:
-            restart_as_admin()
+        response = input("\nContinue without admin rights? (y/n): ").lower()
+        if response != 'y':
+            print("\nPlease restart as Administrator (Right-click → Run as administrator)")
             sys.exit(0)
-        except Exception as e:
-            logger.error(f"Failed to restart as admin: {e}")
-            print(f"\n❌ Error: {e}")
-            print("\nPlease manually run as Administrator (Right-click → Run as administrator)")
-            input("\nPress Enter to exit...")
-            sys.exit(1)
     
     logger.info("Running with administrator privileges")
     

@@ -58,14 +58,17 @@ class MainWindow(ctk.CTk):
         # Create header
         self.create_header()
         
+        # Create main content area (AVANT sidebar pour que content_frame existe)
+        self.create_content_area()
+        
         # Create sidebar
         self.create_sidebar()
         
-        # Create main content area
-        self.create_content_area()
-        
         # Create status bar
         self.create_status_bar()
+        
+        # Show dashboard AFTER everything is created
+        self.show_module("dashboard")
     
     def create_header(self):
         """Create header with logo and system info"""
@@ -133,9 +136,6 @@ class MainWindow(ctk.CTk):
             )
             btn.grid(row=idx, column=0, padx=10, pady=5, sticky="ew")
             self.nav_buttons[module_id] = btn
-        
-        # Show dashboard by default
-        self.show_module("dashboard")
     
     def create_content_area(self):
         """Create main content area"""
