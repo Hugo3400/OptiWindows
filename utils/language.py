@@ -14,23 +14,34 @@ class LanguageManager:
     """Manage application languages"""
     
     def __init__(self):
-        self.config_path = Path(__file__).parent.parent / 'config' / 'languages.json'
+        self.config_dir = Path(__file__).parent.parent / 'config' / 'lang'
         self.settings_path = Path(__file__).parent.parent / 'config' / 'settings.json'
         self.translations: Dict[str, Any] = {}
         self.current_lang = 'fr'
-        self.load_translations()
         self.load_current_language()
+        self.load_translations()
     
     def load_translations(self):
-        """Load all translations from JSON file"""
+        """Load translations from separate language file"""
         try:
-            with open(self.config_path, 'r', encoding='utf-8') as f:
-                self.translations = json.load(f)
-            logger.info(f"Loaded translations for {len(self.translations)} languages")
+            lang_file = self.config_dir / f'{self.current_lang}.json'
+            if lang_file.exists():
+                with open(lang_file, 'r', encoding='utf-8') as f:
+                    self.translations = json.load(f)
+                logger.info(f"Loaded translations for language: {self.current_lang}")
+            else:
+                # Fallback to English
+                en_file = self.config_dir / 'en.json'
+                if en_file.exists():
+                    logger.warning(f"Language file not found: {lang_file}, using English")
+                    with open(en_file, 'r', encoding='utf-8') as f:
+                        self.translations = json.load(f)
+                else:
+                    logger.error(f"No translation files found in {self.config_dir}")
+                    self.translations = {}
         except Exception as e:
             logger.error(f"Failed to load translations: {e}")
-            # Fallback to English
-            self.translations = {'en': {}, 'fr': {}}
+            self.translations = {}
     
     def load_current_language(self):
         """Load current language from settings"""
@@ -45,7 +56,7 @@ class LanguageManager:
     
     def set_language(self, lang_code: str) -> bool:
         """Set application language"""
-        if lang_code not in self.translations:
+        if lang_code not in ['en', 'fr']:
             logger.error(f"Language not available: {lang_code}")
             return False
         
@@ -60,6 +71,7 @@ class LanguageManager:
                 json.dump(settings, f, indent=2, ensure_ascii=False)
             
             self.current_lang = lang_code
+            self.load_translations()  # Reload translations for new language
             logger.info(f"Language changed to: {lang_code}")
             return True
         except Exception as e:
@@ -73,7 +85,7 @@ class LanguageManager:
         """
         try:
             keys = key.split('.')
-            value = self.translations.get(self.current_lang, {})
+            value = self.translations
             
             for k in keys:
                 if isinstance(value, dict):
