@@ -7,7 +7,7 @@ customtkinter==5.2.1
 # System Information
 psutil==5.9.6
 wmi==1.5.1; platform_system=="Windows"
-pywin32==306; platform_system=="Windows"
+pywin32>=307; platform_system=="Windows"
 
 # Additional utilities
-pillow==10.1.0
+pillow>=10.0.0

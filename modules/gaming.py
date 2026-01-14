@@ -164,7 +164,7 @@ class GamingModule:
         desc.pack(pady=10)
         
         options_frame = ctk.CTkScrollableFrame(parent)
-        options_frame.pack(fill="both", expand=True", padx=10, pady=10)
+        options_frame.pack(fill="both", expand=True, padx=10, pady=10)
         
         optimizations = [
             ("Optimize TCP/IP Stack", self.optimize_tcp_ip),

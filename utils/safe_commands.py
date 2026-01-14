@@ -16,7 +16,7 @@ def run_command(
     capture_output: bool = True,
     timeout: int = 60,
     check: bool = False
-) -> Tuple[bool, str, str]:
+) -> Optional[subprocess.CompletedProcess]:
     """
     Safely run a system command with protections
     
@@ -28,7 +28,7 @@ def run_command(
         check: Raise exception on non-zero exit
     
     Returns:
-        Tuple of (success, stdout, stderr)
+        CompletedProcess object or None if blocked/failed
     """
     # Security: Don't allow dangerous commands
     dangerous_commands = [
@@ -44,7 +44,7 @@ def run_command(
     for dangerous in dangerous_commands:
         if dangerous in command_str:
             logger.error(f"BLOCKED dangerous command: {command}")
-            return False, "", "Command blocked for security"
+            return None
     
     # Security: Validate command exists and is in safe locations
     if command and not shell:
@@ -52,7 +52,9 @@ def run_command(
         allowed_exes = [
             'powershell', 'cmd', 'powercfg', 'sc', 'schtasks',
             'netsh', 'reg', 'wmic', 'ipconfig', 'sfc', 'dism',
-            'chkdsk', 'cleanmgr', 'defrag', 'taskkill', 'tasklist'
+            'chkdsk', 'cleanmgr', 'defrag', 'taskkill', 'tasklist',
+            'vssadmin', 'fsutil', 'compact', 'nvidia-settings', 
+            'radeonsettings.exe', 'net', 'del', 'ren', 'start'
         ]
         
         # Check if it's an allowed executable
@@ -71,28 +73,24 @@ def run_command(
             check=check
         )
         
-        success = result.returncode == 0
-        stdout = result.stdout if capture_output else ""
-        stderr = result.stderr if capture_output else ""
-        
-        if not success:
+        if result.returncode != 0:
             logger.warning(f"Command failed (exit {result.returncode}): {' '.join(command)}")
-            if stderr:
-                logger.warning(f"Error output: {stderr}")
+            if result.stderr:
+                logger.warning(f"Error output: {result.stderr}")
         
-        return success, stdout, stderr
+        return result
         
     except subprocess.TimeoutExpired:
         logger.error(f"Command timeout after {timeout}s: {' '.join(command)}")
-        return False, "", f"Command timeout after {timeout}s"
+        return None
         
     except subprocess.CalledProcessError as e:
         logger.error(f"Command error: {e}")
-        return False, e.stdout if hasattr(e, 'stdout') else "", str(e)
+        return None
         
     except Exception as e:
         logger.error(f"Unexpected error running command: {e}")
-        return False, "", str(e)
+        return None
 
 
 def run_powershell(
@@ -231,4 +229,10 @@ def disable_service(service_name: str) -> bool:
     success, _, _ = run_command(
         ['sc', 'config', service_name, 'start=disabled']
     )
+    return success
+
+
+def start_service(service_name: str) -> bool:
+    """Safely start a Windows service"""
+    success, _, _ = run_command(['sc', 'start', service_name])
     return success

@@ -387,8 +387,9 @@ class CleanerModule:
         old_path = Path('C:\\Windows.old')
         if old_path.exists():
             try:
-                    run_command(['cmd', '/c', 'rd', '/s', '/q', str(old_path)], 
-                             timeout=300)
+                run_command(['cmd', '/c', 'rd', '/s', '/q', str(old_path)], 
+                         timeout=300)
+            except:
                 pass
     
     def _clean_defender_logs(self):
